@@ -1,11 +1,16 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <model/Ray.h>
 
 class Camera
 {
 public:
     Camera();
+
+    // screenX/screenY: pixel coordinates, origin top-left
+    // viewportW/H: framebuffer size in pixels
+    Ray screenToRay(float screenX, float screenY, float viewPortW, float viewportH) const;
 
     // Recompute view + projection from current state
     void update(float aspectRatio);

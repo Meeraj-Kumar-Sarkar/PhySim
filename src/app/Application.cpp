@@ -220,6 +220,15 @@ void Application::run()
 
         glfwPollEvents();
 
+        int fbW = 0, fbH = 0;
+        glfwGetFramebufferSize(m_window, &fbW, &fbH);
+
+        const float aspect = (fbH > 0)
+                                 ? static_cast<float>(fbW) / static_cast<float>(fbH)
+                                 : 16.0f / 9.0f;
+
+        m_camera.update(aspect);
+
         // --- Key toggles (edge-triggered) ---
         if (m_input.pressedEdge(m_window, GLFW_KEY_W))
             m_wireframe = !m_wireframe;
@@ -236,13 +245,7 @@ void Application::run()
             m_scrollDelta = 0.0f;
         }
 
-        int fbW = 0, fbH = 0;
-        glfwGetFramebufferSize(m_window, &fbW, &fbH);
-        const float aspect = (fbH > 0)
-                                 ? static_cast<float>(fbW) / static_cast<float>(fbH)
-                                 : 16.0f / 9.0f;
-
-        m_camera.update(aspect);
+        m_transformController.update(m_window, m_camera, m_mesh, m_transform, static_cast<float>(fbW), static_cast<float>(fbH));
 
         glViewport(0, 0, fbW, fbH);
         glClearColor(0.1f, 0.1f, 0.12f, 1.0f);
@@ -262,7 +265,7 @@ void Application::run()
 
         m_shader.bind();
 
-        const glm::mat4 model = glm::mat4(1.0f);
+        const glm::mat4 model = m_transform.matrix();
         m_shader.setMat4("uModel", model);
         m_shader.setMat4("uView", m_camera.view());
         m_shader.setMat4("uProjection", m_camera.projection());

@@ -3,10 +3,12 @@
 #include "view/Shader.h"
 #include "model/Camera.h"
 #include "model/Mesh.h"
+#include "model/Transform.h"
 #include "core/InputState.h"
 #include "view/Grid.h"
 #include "view/GLMesh.h"
 #include "controller/CameraController.h"
+#include "controller/TransformController.h"
 
 struct GLFWwindow;
 
@@ -30,6 +32,8 @@ private:
     GLFWwindow *m_window = nullptr;
     Shader m_shader;
     Camera m_camera;
+    Transform m_transform;
+    TransformController m_transformController;
     CameraController m_cameraController;
     InputState m_input;
     Grid m_grid;

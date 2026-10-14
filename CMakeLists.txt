@@ -15,10 +15,12 @@ add_executable(ObjViewer
     src/model/Mesh.cpp
     src/model/ObjLoader.cpp
     src/model/Camera.cpp
+    src/model/Ray.cpp
     src/view/Shader.cpp
     src/view/GLMesh.cpp
     src/view/Grid.cpp
     src/controller/CameraController.cpp
+    src/controller/TransformController.cpp
     src/core/InputState.cpp
     third_party/glad/src/glad.c
 )
