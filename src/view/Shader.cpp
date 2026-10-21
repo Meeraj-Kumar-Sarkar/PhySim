@@ -36,14 +36,12 @@ Shader::~Shader()
 
 bool Shader::loadFromSource(const char *vertexSrc, const char *fragmentSrc)
 {
-    GLuint vs = compileStage(GL_VERTEX_SHADER, vertexSrc);
+    GLuint vs = compileStage(GL_VERTEX_SHADER,   vertexSrc);
     GLuint fs = compileStage(GL_FRAGMENT_SHADER, fragmentSrc);
     if (!vs || !fs)
     {
-        if (vs)
-            glDeleteShader(vs);
-        if (fs)
-            glDeleteShader(fs);
+        if (vs) glDeleteShader(vs);
+        if (fs) glDeleteShader(fs);
         return false;
     }
 
@@ -104,4 +102,18 @@ void Shader::setVec3(const std::string &name, const glm::vec3 &value) const
     GLint loc = glGetUniformLocation(m_programId, name.c_str());
     if (loc >= 0)
         glUniform3fv(loc, 1, glm::value_ptr(value));
+}
+
+void Shader::setFloat(const std::string &name, float value) const
+{
+    GLint loc = glGetUniformLocation(m_programId, name.c_str());
+    if (loc >= 0)
+        glUniform1f(loc, value);
+}
+
+void Shader::setInt(const std::string &name, int value) const
+{
+    GLint loc = glGetUniformLocation(m_programId, name.c_str());
+    if (loc >= 0)
+        glUniform1i(loc, value);
 }

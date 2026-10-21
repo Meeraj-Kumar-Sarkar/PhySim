@@ -4,11 +4,15 @@
 #include "model/Camera.h"
 #include "model/Mesh.h"
 #include "model/Transform.h"
+#include "model/PhysicsSettings.h"
+#include "model/RigidBody.h"
+#include "model/PhysicsWorld.h"
 #include "core/InputState.h"
 #include "view/Grid.h"
 #include "view/GLMesh.h"
 #include "controller/CameraController.h"
 #include "controller/TransformController.h"
+#include "ui/UI.h"
 
 struct GLFWwindow;
 
@@ -30,28 +34,36 @@ private:
     bool reloadMesh(const std::string &path);
 
     GLFWwindow *m_window = nullptr;
-    Shader m_shader;
-    Camera m_camera;
-    Transform m_transform;
+    Shader      m_shader;
+    Camera      m_camera;
+    Transform   m_transform;
     TransformController m_transformController;
-    CameraController m_cameraController;
-    InputState m_input;
-    Grid m_grid;
+    CameraController    m_cameraController;
+    InputState  m_input;
+    Grid        m_grid;
+
+    // Physics
+    PhysicsSettings m_physicsSettings;
+    RigidBody       m_physicsBody;
+    PhysicsWorld    m_physicsWorld;
+
+    // Rendering settings (owned by Application, edited by UI)
+    RenderSettings  m_renderSettings;
+
+    UI m_ui;
 
     unsigned int m_vao = 0;
     unsigned int m_vbo = 0;
 
     float m_scrollDelta = 0.0f;
 
-    bool m_wireframe = false;
-    bool m_showGrid = true;
-
-    // FPS display
+    // FPS
     double m_lastFpsTime = 0.0;
-    int m_frameCount = 0;
+    int    m_frameCount  = 0;
+    float  m_fps         = 0.0f;
 
     std::string m_currentModelPath;
 
-    Mesh m_mesh;
+    Mesh   m_mesh;
     GLMesh m_glMesh;
 };
