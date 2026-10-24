@@ -168,7 +168,6 @@ bool ObjLoader::load(const std::string &path, Mesh &outMesh)
                 }
             }
         }
-        // mtllib, usemtl, o, g, s are ignored for now
     }
 
     if (!hadNormals)
@@ -178,5 +177,41 @@ bool ObjLoader::load(const std::string &path, Mesh &outMesh)
     std::cout << "ObjLoader: " << path
               << "  (" << outMesh.vertices.size() << " verts, "
               << outMesh.indices.size() / 3 << " tris)\n";
+    return true;
+}
+
+bool ObjLoader::save(const std::string &path, const Mesh &mesh)
+{
+    std::ofstream file(path);
+    if (!file.is_open())
+    {
+        std::cerr << "ObjLoader: cannot write to " << path << "\n";
+        return false;
+    }
+
+    file << "# Exported by ModelViewer\n";
+    file << "# Vertices: " << mesh.vertices.size() << "\n";
+    file << "# Triangles: " << mesh.indices.size() / 3 << "\n\n";
+
+    for (const auto &v : mesh.vertices)
+        file << "v " << v.position.x << " " << v.position.y << " " << v.position.z << "\n";
+
+    for (const auto &v : mesh.vertices)
+        file << "vn " << v.normal.x << " " << v.normal.y << " " << v.normal.z << "\n";
+
+    for (const auto &v : mesh.vertices)
+        file << "vt " << v.uv.x << " " << v.uv.y << "\n";
+
+    for (size_t i = 0; i + 2 < mesh.indices.size(); i += 3)
+    {
+        uint32_t i0 = mesh.indices[i] + 1;
+        uint32_t i1 = mesh.indices[i + 1] + 1;
+        uint32_t i2 = mesh.indices[i + 2] + 1;
+        file << "f " << i0 << "/" << i0 << "/" << i0 << " "
+                     << i1 << "/" << i1 << "/" << i1 << " "
+                     << i2 << "/" << i2 << "/" << i2 << "\n";
+    }
+
+    std::cout << "ObjLoader: exported " << path << "\n";
     return true;
 }

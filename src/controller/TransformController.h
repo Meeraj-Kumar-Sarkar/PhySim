@@ -11,8 +11,9 @@ struct Transform;
 class TransformController
 {
 public:
-    // Call every frame. Needs mouse + mesh bounds to know if the click h it
-    void update(GLFWwindow *window, Camera &camera, const Mesh &mesh, Transform &transform, float viewportW, float viewportH);
+    void update(GLFWwindow *window, Camera &camera, const Mesh &mesh,
+                Transform &transform, float vpOffsetX, float vpOffsetY,
+                float viewportW, float viewportH);
 
     bool isDragging() const { return m_dragging; }
 

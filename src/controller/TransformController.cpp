@@ -27,10 +27,14 @@ namespace
 
 void TransformController::update(GLFWwindow *window, Camera &camera,
                                  const Mesh &mesh, Transform &transform,
+                                 float vpOffsetX, float vpOffsetY,
                                  float viewportW, float viewportH)
 {
     double mx = 0.0, my = 0.0;
     glfwGetCursorPos(window, &mx, &my);
+
+    const float sx = static_cast<float>(mx - vpOffsetX);
+    const float sy = static_cast<float>(my - vpOffsetY);
 
     const bool rmb =
         glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
@@ -38,9 +42,10 @@ void TransformController::update(GLFWwindow *window, Camera &camera,
     // --- Begin drag ---
     if (rmb && !m_dragging)
     {
-        const Ray worldRay = camera.screenToRay(
-            static_cast<float>(mx), static_cast<float>(my),
-            viewportW, viewportH);
+        if (sx < 0.0f || sx > viewportW || sy < 0.0f || sy > viewportH)
+            return;
+
+        const Ray worldRay = camera.screenToRay(sx, sy, viewportW, viewportH);
 
         // Convert to model space
         const glm::mat4 modelMat = transform.matrix();
@@ -80,9 +85,7 @@ void TransformController::update(GLFWwindow *window, Camera &camera,
     // --- Continue drag ---
     if (rmb && m_dragging)
     {
-        const Ray worldRay = camera.screenToRay(
-            static_cast<float>(mx), static_cast<float>(my),
-            viewportW, viewportH);
+        const Ray worldRay = camera.screenToRay(sx, sy, viewportW, viewportH);
 
         glm::vec3 hit;
         if (rayPlane(worldRay, m_dragPlaneNormal, m_dragPlaneD, hit))
